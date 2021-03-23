@@ -3,6 +3,7 @@ package pacman;
 import java.util.Arrays;
 import java.util.Random;
 
+@SuppressWarnings("unused")
 public class Maze {
 	
 	private Random random;

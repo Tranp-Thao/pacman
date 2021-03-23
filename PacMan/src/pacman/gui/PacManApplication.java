@@ -5,6 +5,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+@SuppressWarnings("unused")
 public class PacManApplication {
 
 	public static void main(String[] args) {
@@ -16,6 +17,7 @@ public class PacManApplication {
 			frame.setLocationRelativeTo(null);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
+			frame.setResizable(false);//add 
 		});
 	}
 

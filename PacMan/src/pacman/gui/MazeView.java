@@ -22,14 +22,14 @@ import pacman.Maze;
 import pacman.MazeDescriptions;
 import pacman.MazeMap;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unused" })
 public class MazeView extends JPanel {
 	
-	private static int squareSize = 30;
+	private static int squareSize = 20; //adjust only for now (30 -> 20)
 	private static int lifeSize = squareSize;
 	private static int lifeMargin = 1;
 	private static int dotRadius = squareSize / 10;
-	private static int ghostMoveDelayMillis = 1000;
+	private static int ghostMoveDelayMillis = 500; // change 1000 -> 500
 
 	private static Image loadSquareImage(String filename) {
 		URL url = MazeView.class.getResource(filename);
