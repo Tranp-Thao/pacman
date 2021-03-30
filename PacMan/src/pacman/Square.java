@@ -1,89 +1,155 @@
 package pacman;
 
+import java.util.ArrayList;//add
 import java.util.Arrays;
+import java.util.Collection;//add
+import java.util.EnumMap;//add
+import java.util.List;//add
+import java.util.Objects;//add
 
 /**
- * Each instance of this class represents a position in a maze, specified by a row index and a column index.
- * The top row and the leftmost column have index 0.
+ * Each instance of this class represents a position in a maze, specified by a
+ * row index and a column index. The top row and the leftmost column have index
+ * 0.
  * 
- * 
+ * @invar | getRowIndex() >= 0 && getRowIndex() < getMazeMap().getHeight()
+ * @invar | getColumnIndex() >= 0 && getColumnIndex() < getMazeMap().getWidth()
+ * @invar | getMazeMap() != null
+ * @immutable
  */
 @SuppressWarnings("unused")
 public class Square {
-	private int rowIndex;//add
-	private int columnIndex;//add
-	private MazeMap map;//add
+	/**
+	 * @invar | rowIndex >= 0 && rowIndex < map.getHeight()
+	 * @invar | columnIndex >= 0 && columnIndex < map.getWidth()
+	 */
+	private int rowIndex;
+	private int columnIndex;
+	/**
+	 * @invar | map != null
+	 * @representationObject
+	 */
+	private MazeMap map;
 	
-	private Square(MazeMap mazeMap,int rowIndex,int columnIndex) {//add
-		this.map = mazeMap;//add
-		this.rowIndex = rowIndex;//add
-		this.columnIndex = columnIndex;//add
-	}//add
-	
-	public MazeMap getMazeMap() {// throw new RuntimeException("Not yet implemented");
-		return this.map;//add
-	}
-	
-	public int getRowIndex() { //throw new RuntimeException("Not yet implemented"); 
-		return this.rowIndex;//add
-	}
-	
-	public int getColumnIndex() { //throw new RuntimeException("Not yet implemented"); 
-		return this.columnIndex;//add
-	}
-	
-	public boolean isPassable() {//throw new RuntimeException("Not yet implemented"); 
-		
-		return this.map.isPassable(this.rowIndex, this.columnIndex);//add
-	}
-	
-	public static Square of(MazeMap mazeMap, int rowIndex, int columnIndex) {
-		return new Square(mazeMap,rowIndex,columnIndex);//add???
-		//throw new RuntimeException("Not yet implemented");
+	/**
+	 * Initializes this square object within a given maze with a given row index and column index.
+	 *
+	 */
+	private Square(MazeMap mazeMap, int rowIndex, int columnIndex) {
+		this.map = mazeMap;
+		this.rowIndex = rowIndex;
+		this.columnIndex = columnIndex;
 	}
 	
 	/**
-	 * Returns this square's neighbor in the given direction.
-	 * If this square has no neighbor in the given direction, return the square that is furthest away in the opposite direction.
+	 * Return the the maze that this square belongs to.
+	 * @basic
+	 * @inspects | this
+	 * @creates | result //remove
+	 */
+	public MazeMap getMazeMap() {
+		return this.map;
+	}
+
+	/**
+	 * Return the row index of this square.
+	 * @basic
+	 */
+	public int getRowIndex() { 
+		return this.rowIndex;
+	}
+
+	/**
+	 * Return the column index of this square.
+	 * @basic
+	 */
+	public int getColumnIndex() { 
+		return this.columnIndex;
+	}
+
+	/**
+	 * Check whether this square is passable or not.
+	 * @inspects | this.getMazeMap()
+	 * @return True if and only if the position at the same row index and column index 
+	 * of the maze map that this square belongs to is also passable.
+	 * @post | result == getMazeMap().isPassable(getRowIndex(),getColumnIndex())
+	 */
+	public boolean isPassable() {
+
+		return this.map.isPassable(this.rowIndex, this.columnIndex);
+	}
+
+	/**
+	 * Return a new square object within the given maze and the given row index and column index.
+	 * @creates | result
+	 * @throws IllegalArgumentException | mazeMap ==  null 
+	 * @throws IllegalArgumentException | 0 > rowIndex 
+	 * @throws IllegalArgumentException | rowIndex >= mazeMap.getHeight()
+	 * @throws IllegalArgumentException | 0 > columnIndex
+	 * @throws IllegalArgumentException | columnIndex >= mazeMap.getWidth()
+	 * 
+	 * @post | result != null
+	 * @post | result.getMazeMap().equals(mazeMap)
+	 * @post | result.getRowIndex() == rowIndex
+	 * @post | result.getColumnIndex() == columnIndex
+	 */
+	public static Square of(MazeMap mazeMap, int rowIndex, int columnIndex) { 
+		if (mazeMap ==  null)
+			throw new IllegalArgumentException("`mazeMap` is null");
+		if (rowIndex < 0)
+			throw new IllegalArgumentException("`rowIndex` is negative");
+		if (rowIndex >= mazeMap.getHeight())
+			throw new IllegalArgumentException("`rowIndex` is larger than the heigth of `mazeMap`");
+		if (columnIndex < 0)
+			throw new IllegalArgumentException("`columIndex` is negative");
+		if (columnIndex >= mazeMap.getWidth())
+			throw new IllegalArgumentException("`columnIndex` is larger than the width of `mazeMap`");
+		
+		return new Square(mazeMap, rowIndex, columnIndex);
+	}
+
+	/**
+	 * Returns this square's neighbor in the given direction. If this square has no
+	 * neighbor in the given direction, return the square that is furthest away in
+	 * the opposite direction.
 	 */
 	// No formal documentation required
 	public Square getNeighbor(Direction direction) {
-		int neighborRow;//add
-		int neighborCol;//add
-		Square neighbor = null;//add
-		switch (direction) {//add
-		case RIGHT: neighborRow = this.rowIndex ;//add
-		neighborCol = this.columnIndex + 1 ;//add
-		if (neighborCol <= this.map.getWidth()-2)//add
-			neighbor = Square.of(this.map, neighborRow, neighborCol);//add
-		else
-			neighbor = Square.of(this.map, neighborRow, Math.floorMod(neighborCol,this.map.getWidth()*(-1)));
-		break;//add	
-		case DOWN: neighborRow = this.rowIndex + 1 ;//add
-		neighborCol = this.columnIndex;//add
-		if (neighborRow <= this.map.getHeight()-2)//add
-			neighbor = Square.of(this.map, neighborRow, neighborCol);//add
-		break;//add
-		case LEFT: neighborRow = this.rowIndex ;//add
-		neighborCol = this.columnIndex - 1 ;//add
-		if (neighborCol <= this.map.getWidth()-2 && neighborCol>=1)//add
-			neighbor = Square.of(this.map, neighborRow, neighborCol);//add
-		else 
-			neighbor = Square.of(this.map, neighborRow, Math.floorMod(neighborCol,this.map.getWidth()));
-		break;//add
-		case UP: neighborRow = this.rowIndex - 1 ;//add
-		neighborCol = this.columnIndex;//add
-		if (neighborRow <= this.map.getHeight()-2 && neighborRow>=1)//add
-			neighbor = Square.of(this.map, neighborRow, neighborCol);//add
-		break;//add
+		int neighborRow;
+		int neighborCol;
+		Square neighbor = new Square(map, 0, 0);
 
-
-		}//add
-		return neighbor;//add
-		
-		
-		// Implementation hint: use method java.lang.Math.floorMod.
-		//throw new RuntimeException("Not yet implemented");
+		switch (direction) {
+		case RIGHT:
+			neighborRow = this.rowIndex;
+			neighborCol = this.columnIndex + 1;
+			if (neighborCol <= this.map.getWidth() - 2)
+				neighbor = Square.of(this.map, neighborRow, neighborCol);
+			else
+				neighbor = Square.of(this.map, neighborRow, Math.floorMod(neighborCol, this.map.getWidth()));
+			break;
+		case DOWN:
+			neighborRow = this.rowIndex + 1;
+			neighborCol = this.columnIndex;
+			if (neighborRow <= this.map.getHeight() - 2)
+				neighbor = Square.of(this.map, neighborRow, neighborCol);
+			break;
+		case LEFT:
+			neighborRow = this.rowIndex;
+			neighborCol = this.columnIndex - 1;
+			if (neighborCol <= this.map.getWidth() - 2 && neighborCol >= 1)
+				neighbor = Square.of(this.map, neighborRow, neighborCol);
+			else
+				neighbor = Square.of(this.map, neighborRow, Math.floorMod(neighborCol, this.map.getWidth()));
+			break;
+		case UP:
+			neighborRow = this.rowIndex - 1;
+			neighborCol = this.columnIndex;
+			if (neighborRow <= this.map.getHeight() - 2 && neighborRow >= 1)
+				neighbor = Square.of(this.map, neighborRow, neighborCol);
+			break;
+		}
+		return neighbor;
 	}
 
 	/**
@@ -91,113 +157,53 @@ public class Square {
 	 */
 	// No formal documentation required
 	public boolean canMove(Direction direction) {
-		if(getNeighbor(direction) != null)//add   // this one to prevent the ghost go over the map line
-			return getNeighbor(direction).isPassable(); //add
-		return false;//add
-		//throw new RuntimeException("Not yet implemented");
+		Square neighbor = getNeighbor(direction);
+		if (neighbor != null)
+			return neighbor.isPassable(); 
+		return false;
 	}
 
 	/**
-	 * Returns the directions that are different from the given excluded direction and such that the neighbor in that direction is passable.
-	 * The returned array shall have no null elements and shall have no duplicates.
+	 * Returns the directions that are different from the given excluded direction
+	 * and such that the neighbor in that direction is passable. The returned array
+	 * shall have no null elements and shall have no duplicates.
 	 */
 	// No formal documentation required
 	public Direction[] getPassableDirectionsExcept(Direction excludedDirection) {
-		Direction direct = excludedDirection;
-		System.out.print(direct.toString());
+		List<Direction> newDirections = new ArrayList<>();
+		List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
 		
-		int index = 0;
-		switch (excludedDirection) {
-		case RIGHT: index = 0;
-		case DOWN: index = 1;
-		case LEFT: index = 2;
-		case UP: index = 3;
+		int index = -1;
+		for (int i = 0; i < directions.size(); i++) {
+			if (directions.get(i).name().equals(excludedDirection.name())) {
+				continue;
+			} else {
+				newDirections.add(directions.get(i));
+			}
 		}
-		System.out.print("" + index);
-		// create an array to hold elements after deletion
-		Direction[] passableDirections = new Direction[Direction.values().length-1];
-		// copy elements from original array from beginning till index into copyArray
-		System.arraycopy(Direction.values(), 0, passableDirections, 0, index);
-		// copy elements from original array from index+1 till end into copyArray
-		System.arraycopy(Direction.values(), index + 1, passableDirections, index, Direction.values().length - index - 1);
-	   System.out.print(""+ passableDirections.length + passableDirections[0] + passableDirections[1] + passableDirections[2]);
-	   for (int i = 0; i < passableDirections.length ; i++) {   //length = 3
-	   if (!canMove(passableDirections[i])) { 
-		   index = i;
-		   Direction[] newPassableDirections = new Direction[passableDirections.length -1];
-		   System.arraycopy(passableDirections, 0, newPassableDirections, 0, index);
-		   System.arraycopy(passableDirections, index + 1, newPassableDirections, index, passableDirections.length - index - 1);
-		   passableDirections = newPassableDirections;
-	   }
-	   }
-	   
-//		Direction[] passableDirections = new Direction[Direction.values().length-1];//add
-//		
-//		int index=0;//add
-//		Direction[] passableDirections = Direction.values().clone();
-//		switch (excludedDirection) {//add
-//			case RIGHT: index = 0;//add
-//			for(int i=0;i<=3;i++)
-//				if(i!=index)
-//					if(!canMove(Direction.values()[i]))
-//						System.arraycopy(Direction.values(), 0, passableDirections, 0, i);
-//	
-//			System.arraycopy(Direction.values(), index + 1, passableDirections, index, Direction.values().length-1);//add
-//			case DOWN: index = 1;//add
-//			System.arraycopy(Direction.values(), index+ 1, passableDirections, index, Direction.values().length-1);//add
-//			case LEFT: index = 2;//add
-//			System.arraycopy(Direction.values(), index+ 1, passableDirections, index, Direction.values().length-1);//add
-//			case UP: index = 3;//add
-//			System.arraycopy(Direction.values(), index+ 1, passableDirections, index, Direction.values().length-1);//add
-//		}
-		return passableDirections;//add
-		//throw new RuntimeException("Not yet implemented"); 
-	}
-	
-	
-	
-	
-  
-	
-	/**
-	 * Returns whether the given square refers to the same {@code MazeMap} object and has the same row and column index as this square.  
-	 */
-	public boolean equals(Square other) {
-		if (other.getMazeMap()==map && other.getRowIndex()==rowIndex && other.getColumnIndex()==columnIndex)//add
-			return true; //add
-		return false; //add
-		//throw new RuntimeException("Not yet implemented");
-	}
-/*
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + columnIndex;
-		result = prime * result + ((map == null) ? 0 : map.hashCode());
-		result = prime * result + rowIndex;
-		return result;
+		
+		Direction[] pre_passableDirections = new Direction[newDirections.size()];
+		for (int i = 0; i < newDirections.size(); i++) { 
+			if (canMove(newDirections.get(i))) {
+				pre_passableDirections[i] = newDirections.get(i);
+			}
+		}
+		Direction[] passableDirections = Arrays.stream(pre_passableDirections).filter(Objects::nonNull).toArray(Direction[]::new);
+		return passableDirections.clone();
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Square other = (Square) obj;
-		if (columnIndex != other.columnIndex)
-			return false;
-		if (map == null) {
-			if (other.map != null)
-				return false;
-		} else if (!map.equals(other.map))
-			return false;
-		if (rowIndex != other.rowIndex)
-			return false;
-		return true;
+	/**
+	 * Returns whether the given square refers to the same {@code MazeMap} object
+	 * and has the same row and column index as this square.
+	 * @throws IllegalArgumentException | other == null
+	 * 
+	 */
+	public boolean equals(Square other) {  
+		if(other == null)
+			throw new IllegalArgumentException("`other` is null");
+		if (other.getMazeMap().equals(map) && other.getRowIndex() == rowIndex && other.getColumnIndex() == columnIndex)
+			return true; 
+		return false; 
 	}
-	*/ // does equals need override???
 }
+

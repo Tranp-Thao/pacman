@@ -3,30 +3,36 @@ package pacman;
 /**
  * Each instance of this class represents a dot (a piece of food for Pac-Man) in a Pac-Man maze.
  * 
- * @invar | getSquare() != null  //add
+ * @invar | getSquare() != null 
  */
 public class Dot {
 	/**
-	 * @invar | square != null   // add
-	 * @representationObject     //add
+	 * @invar | square != null   
+	 * @representationObject    
 	 */
-	private Square square; //add
+	private Square square;
+
 	/**
-	 * @Basic //?
-	 * Return the square representing the position of this object.  //add
-	 * @create | result  //??need or not 
+	 * Return the square representing the position of this dot.
+	 * @basic 
+	 * @inspects | this
+	 * @create | result //remove
 	 */
-	public Square getSquare() {//throw new RuntimeException("Not yet implemented"); //inspector,can not be defined by other method => basic
-		return this.square; //add
+	public Square getSquare() {
+		return this.square; 
 	}
+
 	/**
-	 * Initialize this object so that it represents a dot with given square position. //add
-	 * @pre square != null //add  //nominal way
+	 * Initialize this object so that it represents a dot with given square position. 
+	 * @throws IllegalArgumentException | square == null
 	 * 
-	 * @post | getSquare() == square //add 
+	 * @post | getSquare() == square 
 	 */
-	public Dot(Square square) { //throw new RuntimeException("Not yet implemented"); 
-		this.square = square;//add
+	public Dot(Square square) {  
+		if (square == null)
+			throw new IllegalArgumentException("`square` is null");
+		this.square = square;
 	}
 
 }
+
