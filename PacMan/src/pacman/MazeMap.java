@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
  * 
  * @invar | getWidth() > 0
  * @invar | getHeight() > 0
- * @invar | IntStream.range(0,getHeight()*getWidth()).allMatch(i-> isPassable(i/getWidth(),i%getWidth())==false || isPassable(i/getWidth(),i%getWidth())==true)
+ * @invar | IntStream.range(0,getHeight()*getWidth()-1).allMatch(i-> isPassable(i/getWidth(),i%getWidth())==false || isPassable(i/getWidth(),i%getWidth())==true)
  * 
  * @immutable
  */

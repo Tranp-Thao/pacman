@@ -133,6 +133,8 @@ public class Square {
 			neighborCol = this.columnIndex;
 			if (neighborRow <= this.map.getHeight() - 2)
 				neighbor = Square.of(this.map, neighborRow, neighborCol);
+			else
+				neighbor = Square.of(this.map, Math.floorMod(neighborRow, this.map.getHeight()), neighborCol);//
 			break;
 		case LEFT:
 			neighborRow = this.rowIndex;
@@ -147,6 +149,8 @@ public class Square {
 			neighborCol = this.columnIndex;
 			if (neighborRow <= this.map.getHeight() - 2 && neighborRow >= 1)
 				neighbor = Square.of(this.map, neighborRow, neighborCol);
+			else
+				neighbor = Square.of(this.map, Math.floorMod(neighborRow, this.map.getHeight()), neighborCol);//
 			break;
 		}
 		return neighbor;
